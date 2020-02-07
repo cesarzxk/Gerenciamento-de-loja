@@ -1,27 +1,56 @@
 package loja;
-import java.util.Scanner; 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
+import java.io.*;
 
 public class Main {
 	private static Connection conexao = null;
 	private static Statement status = null;
 	private static ResultSet resultado = null;
-	private static String servidor = "jdbc:mysql://localhost:3306/produtos?useTimezone=true&serverTimezone=UTC";
-	private static String usuario = "root";
-	private static String senha = "";
+	private static String [] dados;
+	
 	private static String driver = "com.mysql.cj.jdbc.Driver";
 	
+	private static DefaultListModel model = new DefaultListModel();
+	private static JList lista = new JList(model);
+	
+    public static String[] leitura() throws IOException {
+    	String[] dados = new String [3];
+    	
+    	FileInputStream stream = new FileInputStream("C:\\Users\\César Vargas\\eclipse-workspace\\Gerenciador\\src\\loja\\dados.txt");
+        InputStreamReader reader = new InputStreamReader(stream);
+        BufferedReader br = new BufferedReader(reader);
+        String linha = br.readLine();
+        int i = 0;
+        while(linha != null) {
+            dados[i] = linha;
+            i++;
+            linha = br.readLine();
+            
+     }
+         if (dados[2] == null) {dados[2]="";};
+         return dados;
+    }
+	
 //-------------------------------------------------------------------------------Banco_de_dados---------------------------------------------------------------------------//	
-	private static void conectar_BD() {
+
+	private static void conectar_BD(String user, String pass, String serv) throws IOException {
+		dados = leitura();
+		
 		try {
+			if (user == "") {
 			Class.forName(driver);
-			conexao = DriverManager.getConnection(servidor,usuario,senha);
+			conexao = DriverManager.getConnection(dados[0],dados[1],dados[2]);
 			status = conexao.createStatement();
 			
 			System.out.println("Conectado com sucesso ao banco de dados!");
+			}else {
+				Class.forName(driver);
+				conexao = DriverManager.getConnection(serv,user,pass);
+				status = conexao.createStatement();
+			}
 		
 		} catch(Exception e) {
 			System.out.println("Erro de conexão!" + e.getMessage());
@@ -45,12 +74,12 @@ public class Main {
 			}
 	}
 	
-	private static void carregar_BD(DefaultListModel lista) throws SQLException {
+	private static void carregar_BD(DefaultListModel lista) {
+		try {
         
 		String sql = "SELECT nome, quantidade, valor FROM produto";
 		PreparedStatement ps = conexao.prepareStatement(sql);
 		ResultSet rs = ps.executeQuery();
-		
 		while(rs.next()){
 			
 			String Nome = rs.getString("nome");
@@ -59,17 +88,34 @@ public class Main {
 		   
 		    lista.addElement("Produto: "+Nome+ "     Quantidade: " + Qtd+ "     Valor: R$ "+ Valor);
 		}
+		}catch (SQLException e) {
+			System.out.println("Carregamento do BD não realizado!");
+		}
 	}
 	
-	private static void remove_BD() {
-		
-		
-		
-		
-	}
-	
+
 //-------------------------------------------------------------------------------Janela__Inicio----------------------------------------------------------------------------//
-	public static String teste_server() {
+	private static void conect_button (JPanel janela, JLabel info, JTextField usuario, JTextField senha, JTextField servidor) {
+		JButton conectar_bt = new JButton("Conectar");
+		ActionListener conectar_al = new ActionListener(){public void actionPerformed(ActionEvent e) {
+			System.out.println(teste_server());
+			try {
+				conectar_BD(usuario.getText(), senha.getText(), servidor.getText());
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			info.setText("   Status: "+teste_server());;
+			if (status != null) {
+				carregar_BD(model);
+			}
+			
+		}};
+		conectar_bt.addActionListener(conectar_al);
+		janela.add(conectar_bt);
+		
+	}
+
+	private static String teste_server() {
 		if (status != null){
 			return "Conectado";
 		} else {
@@ -80,9 +126,19 @@ public class Main {
 	private static void inicio(JTabbedPane main) {
 		JLabel txt = new JLabel("Bem-vindo ao sistema de gerenciamento da sua loja virtual! ");
 		
-		JLabel info1 = new JLabel("Usuário: "+usuario);
-		JLabel info3 = new JLabel("   Servidor: "+servidor);
+		JLabel info1 = new JLabel("Usuário: ");
+		JLabel info2 = new JLabel("Senha: ");
+		JLabel info3 = new JLabel("   Servidor: ");
 		JLabel info4 = new JLabel("   Status: "+ teste_server());
+		
+		JTextField usuario = new JTextField(dados[1]);
+		JTextField senha = new JTextField(dados[2]);
+		JTextField servidor = new JTextField(dados[0]);
+		
+		usuario.setPreferredSize(new Dimension(100,20));
+		senha.setPreferredSize(new Dimension(100,20));
+		servidor.setPreferredSize(new Dimension(100,20));
+		
 		
 		JPanel bvd = new JPanel(new BorderLayout());
 		JPanel info = new JPanel();
@@ -93,9 +149,13 @@ public class Main {
 		
 		msg.add(txt);
 		info.add(info1);
+		info.add(usuario);
+		info.add(info2);
+		info.add(senha);
 		info.add(info3);
+		info.add(servidor);
 		info.add(info4);
-		
+		conect_button(info, info4, usuario, senha, servidor);
 		
 		
 		main.add(" Inicio ",bvd);
@@ -156,7 +216,7 @@ public class Main {
 		janela.add(adicionar);
 		}
 	
-	public static void Atualizar_button(JPanel janela, DefaultListModel lista, Principal loja, JTextField pdt, JTextField qtd, JTextField val) {
+	private static void Atualizar_button(JPanel janela, DefaultListModel lista, Principal loja, JTextField pdt, JTextField qtd, JTextField val) {
 		JButton Atualizar = new JButton("Atualizar");
 		ActionListener sair = new ActionListener(){public void actionPerformed(ActionEvent e) {
 			for (int i=0;i<lista.getSize(); i++) {
@@ -175,10 +235,7 @@ public class Main {
 		janela.add(Atualizar);
 	}
 	
-	private static void tb_adicionar(JTabbedPane painel, Principal loja) throws SQLException {
-		ImageIcon carrinho = new ImageIcon("C:\\Users\\César Vargas\\eclipse-workspace\\loja\\src\\loja\\carrinho.png");
-		
-		
+	private static void tb_adicionar(JTabbedPane painel, Principal loja) {
         JPanel main = new JPanel();
 		JPanel caixa = new JPanel();
 		JPanel caixa2 = new JPanel();
@@ -186,8 +243,7 @@ public class Main {
 		JPanel caixa4 = new JPanel();
 		
 		main.setLayout(new BorderLayout());
-		DefaultListModel model = new DefaultListModel();
-		JList lista = new JList(model);
+		
 		lista.setOpaque(false);
 		
 		caixa2.setBackground(new Color(250,250,250));
@@ -219,7 +275,12 @@ public class Main {
 		Sair_button(caixa4);
 		Adicionar_button(caixa4, model, loja, produto, quantidade, valor);
 		Atualizar_button(caixa4, model, loja, produto, quantidade, valor);
+		try {
 		carregar_BD(model);
+		}catch (Exception e) {
+			System.out.println("");
+		}
+		
 		caixa.add(caixa4);
 		
 		
@@ -246,15 +307,21 @@ public class Main {
 	}
 	
 //------------------------------------------------------------------------------------Main---------------------------------------------------------------------------------//
-	public static void main(String[]args) throws SQLException {
-		conectar_BD();
-		inserir_BD("banana",10,6);
-		Principal loja = new Principal("Casa mata", 100000);
-		criar_loja(loja);
+	public static void main(String[]args) throws IOException {
+		Principal loja = new Principal("Casa mata", 1000000);
+		try {
+			conectar_BD("","","");
+			criar_loja(loja);
+			}catch (SQLException e) {
+				System.out.println("Não conectado ao banco de dados!");
+			}
+
 		loja.adicionar(new Produto("banana",1.50f,100));
 		loja.adicionar(new Produto("laranja",2.50f,200));
 		loja.adicionar(new Produto("abacaxi",1.50f,50));
 		loja.adicionar(new Produto("leite",1.71f,75));
 		loja.adicionar(new Produto("queijo",3.00f,50));
 	}
+
+
 }
