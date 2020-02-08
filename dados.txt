@@ -1,2 +1,3 @@
-jdbc:mysql://localhost:3306/produtos?useTimezone=true&serverTimezone=UTC
-root
+jdbc:mysql:// db4free.net:3306/loja9999
+admin9999
+asd12345
