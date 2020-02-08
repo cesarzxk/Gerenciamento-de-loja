@@ -19,7 +19,7 @@ public class Main {
     public static String[] leitura() throws IOException {
     	String[] dados = new String [3];
     	
-    	FileInputStream stream = new FileInputStream("C:\\Users\\CÈsar Vargas\\eclipse-workspace\\Gerenciador\\src\\loja\\dados.txt");
+    	FileInputStream stream = new FileInputStream("dados.txt");
         InputStreamReader reader = new InputStreamReader(stream);
         BufferedReader br = new BufferedReader(reader);
         String linha = br.readLine();
@@ -53,7 +53,7 @@ public class Main {
 			}
 		
 		} catch(Exception e) {
-			System.out.println("Erro de conex„o!" + e.getMessage());
+			System.out.println("Erro de conex√£o!" + e.getMessage());
 			}
 	}
 	
@@ -89,7 +89,7 @@ public class Main {
 		    lista.addElement("Produto: "+Nome+ "     Quantidade: " + Qtd+ "     Valor: R$ "+ Valor);
 		}
 		}catch (SQLException e) {
-			System.out.println("Carregamento do BD n„o realizado!");
+			System.out.println("Carregamento do BD n√£o realizado!");
 		}
 	}
 	
@@ -126,7 +126,7 @@ public class Main {
 	private static void inicio(JTabbedPane main) {
 		JLabel txt = new JLabel("Bem-vindo ao sistema de gerenciamento da sua loja virtual! ");
 		
-		JLabel info1 = new JLabel("Usu·rio: ");
+		JLabel info1 = new JLabel("Usu√°rio: ");
 		JLabel info2 = new JLabel("Senha: ");
 		JLabel info3 = new JLabel("   Servidor: ");
 		JLabel info4 = new JLabel("   Status: "+ teste_server());
@@ -192,7 +192,7 @@ public class Main {
 			    lista.addElement("Produto: "+pdt.getText() + "     Quantidade: " + qtd.getText()+ "     Valor: R$ "+ val.getText());
 			
 			} else {
-				ImageIcon png = new ImageIcon("C://Users//CÈsar Vargas//eclipse-workspace//loja//src//loja//batman.png");
+				ImageIcon png = new ImageIcon("C://Users//C√©sar Vargas//eclipse-workspace//loja//src//loja//batman.png");
 				int input = JOptionPane.showConfirmDialog(null, "Gostaria de chamar o batman?","Be honest...",
 						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,png);
 				if (input == 0) {
@@ -313,7 +313,7 @@ public class Main {
 			conectar_BD("","","");
 			criar_loja(loja);
 			}catch (SQLException e) {
-				System.out.println("N„o conectado ao banco de dados!");
+				System.out.println("N√£o conectado ao banco de dados!");
 			}
 
 		loja.adicionar(new Produto("banana",1.50f,100));
