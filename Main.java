@@ -23,7 +23,7 @@ public class Main {
     private static String[] leitura() throws IOException {
     	String[] dados = new String [3];
     	
-    	FileInputStream stream = new FileInputStream("C:\\Users\\CÈsar Vargas\\eclipse-workspace\\Gerenciador\\src\\loja\\dados.txt");
+    	FileInputStream stream = new FileInputStream("dados.txt");
         InputStreamReader reader = new InputStreamReader(stream);
         BufferedReader br = new BufferedReader(reader);
         String linha = br.readLine();
@@ -59,7 +59,7 @@ public class Main {
 			}
 		
 		} catch(Exception e) {
-			System.out.println("Erro de conex„o!" + e.getMessage());
+			System.out.println("Erro de conex√£o!" + e.getMessage());
 			status = null;
 			}
 	}
@@ -90,7 +90,7 @@ public class Main {
 		
 		}catch(SQLException e) {
 			
-			System.out.println("Objeto n„o encontrado!");
+			System.out.println("Objeto n√£o encontrado!");
 			
 		}
 }
@@ -129,7 +129,7 @@ public class Main {
 		    lista.addElement("Produto: "+Nome+ "     Quantidade: " + Qtd+ "     Valor: R$ "+ Valor);
 		}
 		}catch (SQLException e) {
-			System.out.println("Carregamento do BD n„o realizado!");
+			System.out.println("Carregamento do BD n√£o realizado!");
 		}
 	}
 	
@@ -142,7 +142,7 @@ public class Main {
 			ps.executeUpdate();
 		
 		}catch(SQLException e) {
-			System.out.println("N„o foi encontrado");
+			System.out.println("N√£o foi encontrado");
 			
 			
 		}
@@ -191,7 +191,7 @@ public class Main {
 			if (status != null && carregado == false) {
 				carregar_BD(model);
 				carregado = true;
-			}else {System.out.print("A lista j· foi carregada!");}
+			}else {System.out.print("A lista j√° foi carregada!");}
 			
 		}};
 		conectar_bt.addActionListener(conectar_al);
@@ -210,7 +210,7 @@ public class Main {
 	private static void inicio(JTabbedPane main) {
 		JLabel txt = new JLabel("Bem-vindo ao sistema de gerenciamento da sua loja virtual! ");
 		
-		JLabel info1 = new JLabel("Usu·rio: ");
+		JLabel info1 = new JLabel("Usu√°rio: ");
 		JLabel info2 = new JLabel("Senha: ");
 		JLabel info3 = new JLabel("   Servidor: ");
 		JLabel info4 = new JLabel("   Status: "+ teste_server());
@@ -277,7 +277,7 @@ public class Main {
 			    try {inserir_BD(pdt.getText(),Integer.parseInt(qtd.getText()),Float.parseFloat( val.getText()));}catch (SQLException x) {}
 			
 			} else {
-				ImageIcon png = new ImageIcon("C://Users//CÈsar Vargas//eclipse-workspace//Gerenciador//src//loja//batman.png");
+				ImageIcon png = new ImageIcon("C://Users//C√©sar Vargas//eclipse-workspace//Gerenciador//src//loja//batman.png");
 				int input = JOptionPane.showConfirmDialog(null, "Gostaria de chamar o Batman?","Be honest...",
 						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,png);
 				if (input == 0) {
@@ -446,7 +446,7 @@ public class Main {
 			conectar_BD("","","");
 			criar_loja(loja);
 			}catch (SQLException e) {
-				System.out.println("N„o conectado ao banco de dados!");
+				System.out.println("N√£o conectado ao banco de dados!");
 			}
 
 		loja.adicionar(new Produto("banana",1.50f,100));
